@@ -17,7 +17,10 @@ holidays, and supports browsing history by day, week, month, or custom range.
 - Track calls only with contacts explicitly tagged as "coworker/team" by the
   user (not all calls on the phone).
 - Missed calls (0 duration) count toward the call count, same as answered
-  calls.
+  calls. Specifically: Android's call log distinguishes `MISSED`, `REJECTED`,
+  and `BLOCKED` call types — `MISSED` and `REJECTED` count (both are real
+  call attempts the user engaged with), `BLOCKED` is excluded (auto-blocked,
+  never reached the user).
 - Daily summary includes:
   - Total calls, total talk time
   - Per-coworker breakdown (calls + time per tagged contact)
@@ -34,17 +37,20 @@ holidays, and supports browsing history by day, week, month, or custom range.
   - Custom date range — pick start/end date, see aggregated totals for the
     range, including average shift span across the range and busiest
     coworker (most calls/time) in that range
-- Filters (single-select) in the History view:
+- Filters (single-select), available in Month, Week, and Range Detail views
+  alike — the filter always applies to whichever range is currently on
+  screen, not just "the month":
   - **All** — no filter
-  - **Sundays** (or configured off-days) of the month — list of matching
-    days with their stats
-  - **Holidays** of the month — list of matching days with their stats
+  - **Sundays** (or configured off-days) in the current range — list of
+    matching days with their stats
+  - **Holidays** in the current range — list of matching days with their
+    stats
   - **Outside working hours** — list of *individual calls* (not days) that
     fell outside the configured working-hours window, since off-hours calls
     can occur on any day
-- Export — generate a CSV of the currently viewed month/range (call log,
-  totals, per-coworker breakdown) via Android's share sheet. PDF export may
-  be added later without a redesign.
+- Export — generate a CSV of exactly what's currently on screen (respects
+  the active filter, if any) via Android's share sheet. PDF export may be
+  added later without a redesign.
 - Home screen widget (Jetpack Glance) — shows today's call count and total
   time; tapping opens the app.
 
@@ -56,19 +62,30 @@ holidays, and supports browsing history by day, week, month, or custom range.
 - Holidays: manually added list of dates + labels (no external calendar
   dependency)
 - Tagged coworkers/team: contacts picked from the phone's contact list,
-  addable/removable at any time
+  addable/removable at any time. Tagging a contact tags ALL phone numbers on
+  that contact card (a coworker may have a mobile and a work line) — not
+  just one selected number.
 
 ## Architecture
 
 - **Language/UI:** Kotlin, Jetpack Compose, MVVM (ViewModel + Repository),
   single-module app.
 - **Call data:** never duplicated into app storage. Every screen queries
-  `CallLog.Calls` via `ContentResolver` on demand, filtered to tagged phone
-  numbers (normalized to survive formatting differences), and computes
-  aggregates in memory. Android's call log already retains full history, so
-  no background sync job is needed for this.
+  `CallLog.Calls` via `ContentResolver` on demand, always with a date-range
+  `WHERE` clause bounding the query to the range actually being viewed
+  (CallLog supports filtering on the `DATE` column) — never a full-history
+  scan. Results are filtered to tagged phone numbers and aggregated in
+  memory. Android's call log already retains full history, so no background
+  sync job is needed for this.
+- **Phone number matching:** numbers are compared by their last 10 digits
+  (stripping country codes, spaces, dashes, and other formatting), which is
+  robust to the different ways the same number can appear in the call log
+  vs. the contacts provider.
 - **Local storage (Room):**
-  - `TaggedContact` — phone number (normalized) + display name
+  - `TaggedContact` — phone number (normalized to last-10-digits form) +
+    display name + source contact ID. One row per tagged phone number; a
+    contact with two numbers produces two rows sharing the same contact ID
+    so they can still be grouped in per-coworker breakdowns.
   - `AppSettings` — working-hours start/end, per-weekday working flags
   - `Holiday` — date + label
 - **Widget refresh:** a WorkManager periodic job (~15 min, the platform
@@ -111,6 +128,27 @@ holidays, and supports browsing history by day, week, month, or custom range.
   query time (so renames in Contacts are reflected without extra syncing);
   matching itself is by normalized phone number, not by contact ID, so a
   tagged number still matches even if removed from Contacts entirely.
+- If the same person is tagged via two separate contact cards (e.g. a
+  personal and a work entry), their stats are tracked as two separate
+  coworkers rather than merged. Known limitation, out of scope for v1.
+
+## Known Limitations
+
+- Working hours assume a same-day window (start time < end time). A window
+  crossing midnight (e.g. a night shift) is not supported in v1.
+- Day/range grouping uses the device's local timezone at query time, not at
+  call time. If the device's timezone changes (e.g. travel), which calendar
+  day a past call is grouped under can shift accordingly.
+- All data stays on-device — the app makes no network calls and has no
+  cloud sync or analytics. Worth stating explicitly given it handles call
+  logs and contacts, both sensitive personal data.
+- Widget behavior before setup is complete (no permissions granted yet, or
+  no coworkers tagged yet) shows a neutral placeholder state prompting the
+  user to open the app, rather than a blank or error widget.
+- Team Setup is skippable on first launch (the user can reach Home with an
+  empty coworker list, which just shows all-zero stats) rather than being a
+  mandatory gate — avoids blocking the user if they want to explore the app
+  first.
 
 ## Testing Approach
 
