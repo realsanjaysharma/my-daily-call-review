@@ -2960,16 +2960,16 @@ fun AppNavGraph(app: DailyCallsReviewApplication, navController: NavHostControll
         composable(Routes.HOME) {
             HomeScreen(
                 app = app,
-                onOpenHistory = { navController.navigate(Routes.HISTORY) },
-                onOpenTeamSetup = { navController.navigate(Routes.TEAM_SETUP) },
-                onOpenSettings = { navController.navigate(Routes.SETTINGS) }
+                onOpenHistory = { navController.navigate(Routes.HISTORY) { launchSingleTop = true } },
+                onOpenTeamSetup = { navController.navigate(Routes.TEAM_SETUP) { launchSingleTop = true } },
+                onOpenSettings = { navController.navigate(Routes.SETTINGS) { launchSingleTop = true } }
             )
         }
         composable(Routes.HISTORY) {
             HistoryScreen(
                 app = app,
-                onOpenDay = { date -> navController.navigate(Routes.dayDetail(date)) },
-                onOpenRange = { start, end -> navController.navigate(Routes.rangeDetail(start, end)) }
+                onOpenDay = { date -> navController.navigate(Routes.dayDetail(date)) { launchSingleTop = true } },
+                onOpenRange = { start, end -> navController.navigate(Routes.rangeDetail(start, end)) { launchSingleTop = true } }
             )
         }
         composable(Routes.TEAM_SETUP) {
@@ -2998,7 +2998,7 @@ fun AppNavGraph(app: DailyCallsReviewApplication, navController: NavHostControll
                 app = app,
                 startDate = start,
                 endDate = end,
-                onOpenDay = { date -> navController.navigate(Routes.dayDetail(date)) }
+                onOpenDay = { date -> navController.navigate(Routes.dayDetail(date)) { launchSingleTop = true } }
             )
         }
     }
@@ -3017,6 +3017,7 @@ import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.Surface
 import androidx.compose.ui.Modifier
+import androidx.navigation.compose.rememberNavController
 import com.dailycallsreview.app.ui.nav.AppNavGraph
 import com.dailycallsreview.app.ui.permissions.PermissionsGate
 
@@ -3027,8 +3028,9 @@ class MainActivity : ComponentActivity() {
         setContent {
             MaterialTheme {
                 Surface(modifier = Modifier.fillMaxSize()) {
+                    val navController = rememberNavController()
                     PermissionsGate {
-                        AppNavGraph(app = app)
+                        AppNavGraph(app = app, navController = navController)
                     }
                 }
             }
@@ -3036,6 +3038,8 @@ class MainActivity : ComponentActivity() {
     }
 }
 ```
+
+Note: `rememberNavController()` is hoisted to `Surface`'s content, outside `PermissionsGate`'s conditionally-composed `content()` lambda, and passed into `AppNavGraph` explicitly. This matters because `PermissionsGate` re-checks its `granted` state on every `ON_RESUME` (see Task 11) — if the user revokes the call-log/contacts permission while backgrounded, `content()` (and anything created inside it) is torn down when `granted` flips to `false`. Creating the `navController` outside that conditional means the back stack survives a permission revoke/re-grant cycle instead of silently resetting to Home.
 
 - [ ] **Step 3: Verify the full project compiles**
 

@@ -34,16 +34,16 @@ fun AppNavGraph(app: DailyCallsReviewApplication, navController: NavHostControll
         composable(Routes.HOME) {
             HomeScreen(
                 app = app,
-                onOpenHistory = { navController.navigate(Routes.HISTORY) },
-                onOpenTeamSetup = { navController.navigate(Routes.TEAM_SETUP) },
-                onOpenSettings = { navController.navigate(Routes.SETTINGS) }
+                onOpenHistory = { navController.navigate(Routes.HISTORY) { launchSingleTop = true } },
+                onOpenTeamSetup = { navController.navigate(Routes.TEAM_SETUP) { launchSingleTop = true } },
+                onOpenSettings = { navController.navigate(Routes.SETTINGS) { launchSingleTop = true } }
             )
         }
         composable(Routes.HISTORY) {
             HistoryScreen(
                 app = app,
-                onOpenDay = { date -> navController.navigate(Routes.dayDetail(date)) },
-                onOpenRange = { start, end -> navController.navigate(Routes.rangeDetail(start, end)) }
+                onOpenDay = { date -> navController.navigate(Routes.dayDetail(date)) { launchSingleTop = true } },
+                onOpenRange = { start, end -> navController.navigate(Routes.rangeDetail(start, end)) { launchSingleTop = true } }
             )
         }
         composable(Routes.TEAM_SETUP) {
@@ -72,7 +72,7 @@ fun AppNavGraph(app: DailyCallsReviewApplication, navController: NavHostControll
                 app = app,
                 startDate = start,
                 endDate = end,
-                onOpenDay = { date -> navController.navigate(Routes.dayDetail(date)) }
+                onOpenDay = { date -> navController.navigate(Routes.dayDetail(date)) { launchSingleTop = true } }
             )
         }
     }

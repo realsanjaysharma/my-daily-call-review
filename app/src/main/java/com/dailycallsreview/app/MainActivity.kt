@@ -7,6 +7,7 @@ import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.Surface
 import androidx.compose.ui.Modifier
+import androidx.navigation.compose.rememberNavController
 import com.dailycallsreview.app.ui.nav.AppNavGraph
 import com.dailycallsreview.app.ui.permissions.PermissionsGate
 
@@ -17,8 +18,9 @@ class MainActivity : ComponentActivity() {
         setContent {
             MaterialTheme {
                 Surface(modifier = Modifier.fillMaxSize()) {
+                    val navController = rememberNavController()
                     PermissionsGate {
-                        AppNavGraph(app = app)
+                        AppNavGraph(app = app, navController = navController)
                     }
                 }
             }
