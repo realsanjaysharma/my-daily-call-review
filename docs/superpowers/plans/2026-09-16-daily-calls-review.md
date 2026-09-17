@@ -2555,13 +2555,19 @@ data class RangeDetailUiState(
 )
 
 class RangeDetailViewModel(
-    private val startDate: LocalDate,
-    private val endDate: LocalDate,
+    startDate: LocalDate,
+    endDate: LocalDate,
     private val callLogRepository: CallLogRepository,
     private val teamRepository: TeamRepository,
     private val settingsRepository: SettingsRepository,
     private val zone: ZoneId = ZoneId.systemDefault()
 ) : ViewModel() {
+
+    // Normalized defensively: callers (e.g. History's custom-range date pickers) don't validate
+    // that endDate >= startDate, and an inverted range would make generateSequence/takeWhile
+    // below yield an empty list, which CallAggregator.computeRangeSummary rejects via `require`.
+    private val rangeStart = minOf(startDate, endDate)
+    private val rangeEnd = maxOf(startDate, endDate)
 
     private val filter = MutableStateFlow(HistoryFilter.ALL)
 
@@ -2574,14 +2580,14 @@ class RangeDetailViewModel(
                 currentFilter to schedule
             }.collectLatest { (currentFilter, schedule) ->
                 val taggedNumbers = teamRepository.getTaggedNumbersOnce()
-                val startMillis = startDate.atStartOfDay(zone).toInstant().toEpochMilli()
-                val endMillis = endDate.plusDays(1).atStartOfDay(zone).toInstant().toEpochMilli()
+                val startMillis = rangeStart.atStartOfDay(zone).toInstant().toEpochMilli()
+                val endMillis = rangeEnd.plusDays(1).atStartOfDay(zone).toInstant().toEpochMilli()
                 val records = callLogRepository.getCallsBetween(startMillis, endMillis, taggedNumbers)
                 val recordsByDate = records.groupBy {
                     Instant.ofEpochMilli(it.timestampMillis).atZone(zone).toLocalDate()
                 }
-                val dailySummaries = generateSequence(startDate) { it.plusDays(1) }
-                    .takeWhile { !it.isAfter(endDate) }
+                val dailySummaries = generateSequence(rangeStart) { it.plusDays(1) }
+                    .takeWhile { !it.isAfter(rangeEnd) }
                     .map { date -> CallAggregator.computeDailySummary(date, recordsByDate[date].orEmpty(), schedule, zone) }
                     .toList()
 
