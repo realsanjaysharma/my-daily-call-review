@@ -30,7 +30,7 @@ class CallAggregatorTest {
         date: LocalDate,
         time: LocalTime,
         number: String = "9876543210",
-        name: String = "Asha",
+        name: String? = "Asha",
         durationSeconds: Int = 120,
         type: CallType = CallType.ANSWERED
     ) = CallRecord(
@@ -124,6 +124,40 @@ class CallAggregatorTest {
         val summary = CallAggregator.computeDailySummary(monday, calls, schedule, zone)
         assertEquals(2, summary.totalCalls)
         assertEquals(1, summary.offHoursCallCount)
+    }
+
+    @Test
+    fun `daily summary display name prefers the most recent non-null contact name over a later null`() {
+        val monday = LocalDate.of(2026, 3, 2)
+        val calls = listOf(
+            record(monday, LocalTime.of(9, 0), number = "9876543210", name = "Asha"),
+            record(monday, LocalTime.of(17, 0), number = "9876543210", name = null)
+        )
+        val summary = CallAggregator.computeDailySummary(monday, calls, schedule, zone)
+        assertEquals("Asha", summary.perCoworker["9876543210"]?.displayName)
+    }
+
+    @Test
+    fun `range summary keeps a known display name instead of letting a later no-name day blank it out`() {
+        val day1 = LocalDate.of(2026, 3, 2)
+        val day2 = LocalDate.of(2026, 3, 3)
+
+        val summary1 = CallAggregator.computeDailySummary(
+            day1,
+            listOf(record(day1, LocalTime.of(9, 0), number = "9876543210", name = "Asha")),
+            schedule,
+            zone
+        )
+        val summary2 = CallAggregator.computeDailySummary(
+            day2,
+            listOf(record(day2, LocalTime.of(9, 0), number = "9876543210", name = null)),
+            schedule,
+            zone
+        )
+
+        val range = CallAggregator.computeRangeSummary(listOf(summary1, summary2))
+
+        assertEquals("Asha", range.perCoworker["9876543210"]?.displayName)
     }
 
     @Test
