@@ -38,9 +38,6 @@ fun SettingsScreen(app: DailyCallsReviewApplication) {
     val context = LocalContext.current
 
     schedule?.let { current ->
-        var workStart by remember(current) { mutableStateOf(current.workStart) }
-        var workEnd by remember(current) { mutableStateOf(current.workEnd) }
-        var workingDays by remember(current) { mutableStateOf(current.workingDays) }
         var holidayLabel by remember { mutableStateOf("") }
         var holidayDate by remember { mutableStateOf(LocalDate.now()) }
 
@@ -48,26 +45,26 @@ fun SettingsScreen(app: DailyCallsReviewApplication) {
             item {
                 Button(onClick = {
                     TimePickerDialog(context, { _, hour, minute ->
-                        workStart = LocalTime.of(hour, minute)
-                        viewModel.saveWorkHours(workStart, workEnd, workingDays)
-                    }, workStart.hour, workStart.minute, false).show()
-                }) { Text("Work start: $workStart") }
+                        val newStart = LocalTime.of(hour, minute)
+                        viewModel.saveWorkHours(newStart, current.workEnd, current.workingDays)
+                    }, current.workStart.hour, current.workStart.minute, false).show()
+                }) { Text("Work start: ${current.workStart}") }
             }
             item {
                 Button(onClick = {
                     TimePickerDialog(context, { _, hour, minute ->
-                        workEnd = LocalTime.of(hour, minute)
-                        viewModel.saveWorkHours(workStart, workEnd, workingDays)
-                    }, workEnd.hour, workEnd.minute, false).show()
-                }) { Text("Work end: $workEnd") }
+                        val newEnd = LocalTime.of(hour, minute)
+                        viewModel.saveWorkHours(current.workStart, newEnd, current.workingDays)
+                    }, current.workEnd.hour, current.workEnd.minute, false).show()
+                }) { Text("Work end: ${current.workEnd}") }
             }
             items(DayOfWeek.entries) { day ->
                 Row {
                     Checkbox(
-                        checked = day in workingDays,
+                        checked = day in current.workingDays,
                         onCheckedChange = { checked ->
-                            workingDays = if (checked) workingDays + day else workingDays - day
-                            viewModel.saveWorkHours(workStart, workEnd, workingDays)
+                            val newDays = if (checked) current.workingDays + day else current.workingDays - day
+                            viewModel.saveWorkHours(current.workStart, current.workEnd, newDays)
                         }
                     )
                     Text(day.name)
@@ -91,7 +88,7 @@ fun SettingsScreen(app: DailyCallsReviewApplication) {
                     }) { Text("Add holiday") }
                 }
             }
-            items(current.holidays.sorted()) { date ->
+            items(current.holidays.sorted(), key = { it.toString() }) { date ->
                 Row {
                     Text(date.toString())
                     Button(onClick = { viewModel.removeHoliday(date) }) { Text("Remove") }
