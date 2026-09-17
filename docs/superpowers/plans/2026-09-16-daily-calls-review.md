@@ -925,7 +925,7 @@ git commit -m "feat: add tagged contact Room entity and DAO"
 - Create: `app/src/main/java/com/dailycallsreview/app/data/db/Holiday.kt`
 - Test: `app/src/androidTest/java/com/dailycallsreview/app/data/db/HolidayDaoTest.kt`
 
-- [ ] **Step 1: Create the entity and DAO**
+- [x] **Step 1: Create the entity and DAO**
 
 ```kotlin
 package com.dailycallsreview.app.data.db
@@ -957,7 +957,7 @@ interface HolidayDao {
 }
 ```
 
-- [ ] **Step 2: Write the instrumented test**
+- [x] **Step 2: Write the instrumented test**
 
 ```kotlin
 package com.dailycallsreview.app.data.db
@@ -1020,12 +1020,12 @@ class HolidayDaoTest {
 }
 ```
 
-- [ ] **Step 3: Run the instrumented test**
+- [x] **Step 3: Run the instrumented test**
 
 Run: `./gradlew connectedDebugAndroidTest -Pandroid.testInstrumentationRunnerArguments.class=com.dailycallsreview.app.data.db.HolidayDaoTest` (the `--tests` flag is not recognized by `connectedDebugAndroidTest` on this AGP version — use `-Pandroid.testInstrumentationRunnerArguments.class=...` instead to filter to one class)
 Expected: `BUILD SUCCESSFUL`, 2 tests passed.
 
-- [ ] **Step 4: Commit**
+- [x] **Step 4: Commit**
 
 ```bash
 git add app/src/main/java/com/dailycallsreview/app/data/db/Holiday.kt app/src/androidTest/java/com/dailycallsreview/app/data/db/HolidayDaoTest.kt
