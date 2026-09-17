@@ -1480,6 +1480,8 @@ import com.dailycallsreview.app.data.db.HolidayEntity
 import com.dailycallsreview.app.data.db.WorkingDaysMask
 import kotlinx.coroutines.flow.Flow
 import kotlinx.coroutines.flow.combine
+import kotlinx.coroutines.sync.Mutex
+import kotlinx.coroutines.sync.withLock
 import java.time.DayOfWeek
 import java.time.LocalDate
 import java.time.LocalTime
@@ -1494,6 +1496,8 @@ class SettingsRepository(
     private val settingsDao: AppSettingsDao,
     private val holidayDao: HolidayDao
 ) {
+    private val writeMutex = Mutex()
+
     fun observeWorkSchedule(): Flow<WorkSchedule> =
         combine(settingsDao.observe(), holidayDao.observeAll()) { settingsEntity, holidayEntities ->
             val settings = settingsEntity ?: DEFAULT_SETTINGS
@@ -1506,13 +1510,18 @@ class SettingsRepository(
         }
 
     suspend fun saveWorkSchedule(workStart: LocalTime, workEnd: LocalTime, workingDays: Set<DayOfWeek>) {
-        settingsDao.upsert(
-            AppSettingsEntity(
-                workStartMinutes = workStart.toSecondOfDay() / 60,
-                workEndMinutes = workEnd.toSecondOfDay() / 60,
-                workingDaysMask = WorkingDaysMask.fromSet(workingDays)
+        // Serialized: concurrent callers (e.g. two rapid checkbox toggles in
+        // SettingsScreen, Task 13) can't have their upserts reordered by
+        // Room's executor pool and silently overwrite one another.
+        writeMutex.withLock {
+            settingsDao.upsert(
+                AppSettingsEntity(
+                    workStartMinutes = workStart.toSecondOfDay() / 60,
+                    workEndMinutes = workEnd.toSecondOfDay() / 60,
+                    workingDaysMask = WorkingDaysMask.fromSet(workingDays)
+                )
             )
-        )
+        }
     }
 
     suspend fun addHoliday(date: LocalDate, label: String) {
@@ -1816,7 +1825,7 @@ Lets the user set working hours (via `TimePickerDialog`), toggle each weekday as
 - Create: `app/src/main/java/com/dailycallsreview/app/ui/settings/SettingsViewModel.kt`
 - Create: `app/src/main/java/com/dailycallsreview/app/ui/settings/SettingsScreen.kt`
 
-- [ ] **Step 1: Write `SettingsViewModel.kt`**
+- [x] **Step 1: Write `SettingsViewModel.kt`**
 
 ```kotlin
 package com.dailycallsreview.app.ui.settings
@@ -1854,7 +1863,7 @@ class SettingsViewModel(
 }
 ```
 
-- [ ] **Step 2: Write `SettingsScreen.kt`**
+- [x] **Step 2: Write `SettingsScreen.kt`**
 
 ```kotlin
 package com.dailycallsreview.app.ui.settings
@@ -1896,10 +1905,15 @@ fun SettingsScreen(app: DailyCallsReviewApplication) {
     val schedule by viewModel.schedule.collectAsState()
     val context = LocalContext.current
 
+    // No local draft mirrors for workStart/workEnd/workingDays: every edit
+    // saves immediately, so there is no unsaved state to protect, and
+    // mirroring `current` into remember(current)-keyed vars is actively
+    // harmful — when an async write's result echoes back through
+    // observeWorkSchedule() before a second, still-in-flight edit's write
+    // completes, the re-key snaps all three vars back to the stale value
+    // and silently drops the second edit. Read straight from `current` for
+    // display and compute each new value inline at the point of the edit.
     schedule?.let { current ->
-        var workStart by remember(current) { mutableStateOf(current.workStart) }
-        var workEnd by remember(current) { mutableStateOf(current.workEnd) }
-        var workingDays by remember(current) { mutableStateOf(current.workingDays) }
         var holidayLabel by remember { mutableStateOf("") }
         var holidayDate by remember { mutableStateOf(LocalDate.now()) }
 
@@ -1907,26 +1921,26 @@ fun SettingsScreen(app: DailyCallsReviewApplication) {
             item {
                 Button(onClick = {
                     TimePickerDialog(context, { _, hour, minute ->
-                        workStart = LocalTime.of(hour, minute)
-                        viewModel.saveWorkHours(workStart, workEnd, workingDays)
-                    }, workStart.hour, workStart.minute, false).show()
-                }) { Text("Work start: $workStart") }
+                        val newStart = LocalTime.of(hour, minute)
+                        viewModel.saveWorkHours(newStart, current.workEnd, current.workingDays)
+                    }, current.workStart.hour, current.workStart.minute, false).show()
+                }) { Text("Work start: ${current.workStart}") }
             }
             item {
                 Button(onClick = {
                     TimePickerDialog(context, { _, hour, minute ->
-                        workEnd = LocalTime.of(hour, minute)
-                        viewModel.saveWorkHours(workStart, workEnd, workingDays)
-                    }, workEnd.hour, workEnd.minute, false).show()
-                }) { Text("Work end: $workEnd") }
+                        val newEnd = LocalTime.of(hour, minute)
+                        viewModel.saveWorkHours(current.workStart, newEnd, current.workingDays)
+                    }, current.workEnd.hour, current.workEnd.minute, false).show()
+                }) { Text("Work end: ${current.workEnd}") }
             }
             items(DayOfWeek.entries) { day ->
                 Row {
                     Checkbox(
-                        checked = day in workingDays,
+                        checked = day in current.workingDays,
                         onCheckedChange = { checked ->
-                            workingDays = if (checked) workingDays + day else workingDays - day
-                            viewModel.saveWorkHours(workStart, workEnd, workingDays)
+                            val newDays = if (checked) current.workingDays + day else current.workingDays - day
+                            viewModel.saveWorkHours(current.workStart, current.workEnd, newDays)
                         }
                     )
                     Text(day.name)
@@ -1950,7 +1964,7 @@ fun SettingsScreen(app: DailyCallsReviewApplication) {
                     }) { Text("Add holiday") }
                 }
             }
-            items(current.holidays.sorted()) { date ->
+            items(current.holidays.sorted(), key = { it.toString() }) { date ->
                 Row {
                     Text(date.toString())
                     Button(onClick = { viewModel.removeHoliday(date) }) { Text("Remove") }
@@ -1961,12 +1975,16 @@ fun SettingsScreen(app: DailyCallsReviewApplication) {
 }
 ```
 
-- [ ] **Step 3: Verify the project compiles**
+`SettingsRepository.saveWorkSchedule` (Task 10) wraps its write in a `Mutex` so that concurrent
+calls from rapid edits here can't be reordered by Room's executor pool and silently overwrite one
+another — see the updated code block in Task 10, Step 2.
+
+- [x] **Step 3: Verify the project compiles**
 
 Run: `./gradlew compileDebugKotlin`
 Expected: `BUILD SUCCESSFUL`
 
-- [ ] **Step 4: Commit**
+- [x] **Step 4: Commit**
 
 ```bash
 git add app/src/main/java/com/dailycallsreview/app/ui/settings
