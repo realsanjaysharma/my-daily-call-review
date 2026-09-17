@@ -2444,7 +2444,7 @@ Day Detail reuses `DailySummaryCard` (Task 14) as-is. Range Detail composes `Cal
 - Create: `app/src/main/java/com/dailycallsreview/app/ui/rangedetail/RangeDetailViewModel.kt`
 - Create: `app/src/main/java/com/dailycallsreview/app/ui/rangedetail/RangeDetailScreen.kt`
 
-- [ ] **Step 1: Write `DayDetailViewModel.kt`**
+- [x] **Step 1: Write `DayDetailViewModel.kt`**
 
 ```kotlin
 package com.dailycallsreview.app.ui.daydetail
@@ -2489,7 +2489,7 @@ class DayDetailViewModel(
 }
 ```
 
-- [ ] **Step 2: Write `DayDetailScreen.kt`**
+- [x] **Step 2: Write `DayDetailScreen.kt`**
 
 ```kotlin
 package com.dailycallsreview.app.ui.daydetail
@@ -2520,7 +2520,7 @@ fun DayDetailScreen(app: DailyCallsReviewApplication, date: LocalDate) {
 }
 ```
 
-- [ ] **Step 3: Write `RangeDetailViewModel.kt`**
+- [x] **Step 3: Write `RangeDetailViewModel.kt`**
 
 Per the spec, filters (All / Off Days / Holidays / Outside Working Hours) apply here too, not just in History — so this reuses the `HistoryFilter` enum from Task 15 rather than duplicating it, and exposes both the aggregate `RangeSummary` rollup (shown under the `ALL` filter) and the filtered day/call lists (shown under the other filters), matching how `HistoryViewModel` works.
 
@@ -2616,7 +2616,7 @@ class RangeDetailViewModel(
 }
 ```
 
-- [ ] **Step 4: Write `RangeDetailScreen.kt`**
+- [x] **Step 4: Write `RangeDetailScreen.kt`**
 
 Under the `ALL` filter this shows the aggregate rollup (as before); under `OUTSIDE_HOURS` it shows individual calls; under the remaining filters it shows the matching day list (reusing the `Day Detail` navigation, same as History). Export also respects whichever filter is active, per spec.
 
@@ -2720,7 +2720,7 @@ fun RangeDetailScreen(
 }
 ```
 
-- [ ] **Step 5: Commit (compile check deferred to Task 17, same reason as Task 15)**
+- [x] **Step 5: Commit (compile check deferred to Task 17, same reason as Task 15)**
 
 ```bash
 git add app/src/main/java/com/dailycallsreview/app/ui/daydetail app/src/main/java/com/dailycallsreview/app/ui/rangedetail
