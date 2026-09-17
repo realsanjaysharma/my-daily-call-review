@@ -1261,7 +1261,7 @@ This talks to a real `ContentProvider` and real device call history, so per the 
 **Files:**
 - Create: `app/src/main/java/com/dailycallsreview/app/data/calllog/CallLogRepository.kt`
 
-- [ ] **Step 1: Write `CallLogRepository.kt`**
+- [x] **Step 1: Write `CallLogRepository.kt`**
 
 ```kotlin
 package com.dailycallsreview.app.data.calllog
@@ -1329,12 +1329,12 @@ class CallLogRepository(private val context: Context) {
 }
 ```
 
-- [ ] **Step 2: Verify the project compiles**
+- [x] **Step 2: Verify the project compiles**
 
 Run: `./gradlew compileDebugKotlin`
 Expected: `BUILD SUCCESSFUL`
 
-- [ ] **Step 3: Commit**
+- [x] **Step 3: Commit**
 
 ```bash
 git add app/src/main/java/com/dailycallsreview/app/data/calllog/CallLogRepository.kt
