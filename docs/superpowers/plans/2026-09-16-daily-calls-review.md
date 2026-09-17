@@ -2921,7 +2921,7 @@ Wires every screen from Tasks 12–16 together via Navigation-Compose, and repla
 - Create: `app/src/main/java/com/dailycallsreview/app/ui/nav/NavGraph.kt`
 - Modify: `app/src/main/java/com/dailycallsreview/app/MainActivity.kt`
 
-- [ ] **Step 1: Write `NavGraph.kt`**
+- [x] **Step 1: Write `NavGraph.kt`**
 
 ```kotlin
 package com.dailycallsreview.app.ui.nav
@@ -3005,7 +3005,7 @@ fun AppNavGraph(app: DailyCallsReviewApplication, navController: NavHostControll
 }
 ```
 
-- [ ] **Step 2: Replace `MainActivity.kt` with the real app shell**
+- [x] **Step 2: Replace `MainActivity.kt` with the real app shell**
 
 ```kotlin
 package com.dailycallsreview.app
@@ -3041,17 +3041,17 @@ class MainActivity : ComponentActivity() {
 
 Note: `rememberNavController()` is hoisted to `Surface`'s content, outside `PermissionsGate`'s conditionally-composed `content()` lambda, and passed into `AppNavGraph` explicitly. This matters because `PermissionsGate` re-checks its `granted` state on every `ON_RESUME` (see Task 11) — if the user revokes the call-log/contacts permission while backgrounded, `content()` (and anything created inside it) is torn down when `granted` flips to `false`. Creating the `navController` outside that conditional means the back stack survives a permission revoke/re-grant cycle instead of silently resetting to Home.
 
-- [ ] **Step 3: Verify the full project compiles**
+- [x] **Step 3: Verify the full project compiles**
 
 Run: `./gradlew assembleDebug`
 Expected: `BUILD SUCCESSFUL`
 
-- [ ] **Step 4: Run the full unit test suite**
+- [x] **Step 4: Run the full unit test suite**
 
 Run: `./gradlew testDebugUnitTest`
 Expected: `BUILD SUCCESSFUL`, all tests from Tasks 3, 4, and 7 pass (17 tests total: 4 + 9 + 4).
 
-- [ ] **Step 5: Commit**
+- [x] **Step 5: Commit**
 
 ```bash
 git add app/src/main/java/com/dailycallsreview/app/ui/nav app/src/main/java/com/dailycallsreview/app/MainActivity.kt
