@@ -2218,7 +2218,7 @@ Implements the spec's month/week toggle and the single-select filter chips (All 
 - Create: `app/src/main/java/com/dailycallsreview/app/ui/history/HistoryViewModel.kt`
 - Create: `app/src/main/java/com/dailycallsreview/app/ui/history/HistoryScreen.kt`
 
-- [ ] **Step 1: Write `HistoryViewModel.kt`**
+- [x] **Step 1: Write `HistoryViewModel.kt`**
 
 ```kotlin
 package com.dailycallsreview.app.ui.history
@@ -2333,7 +2333,7 @@ class HistoryViewModel(
 }
 ```
 
-- [ ] **Step 2: Write `HistoryScreen.kt`**
+- [x] **Step 2: Write `HistoryScreen.kt`**
 
 ```kotlin
 package com.dailycallsreview.app.ui.history
@@ -2425,7 +2425,7 @@ fun HistoryScreen(
 
 Note: `HistoryScreen.kt` references `CsvExporter`, which is written in Task 17. This is fine — Task 17 is completed before Task 18 (final navigation wiring) touches this screen's compiled output, and the project as a whole isn't required to compile again until Task 17 adds the missing file. If executing tasks strictly in order and verifying compilation after every task, skip the "verify compiles" step below for this task and instead verify after Task 17.
 
-- [ ] **Step 3: Commit (do not run a compile check yet — `CsvExporter` doesn't exist until Task 17)**
+- [x] **Step 3: Commit (do not run a compile check yet — `CsvExporter` doesn't exist until Task 17)**
 
 ```bash
 git add app/src/main/java/com/dailycallsreview/app/ui/history
