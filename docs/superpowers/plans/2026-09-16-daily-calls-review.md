@@ -26,7 +26,7 @@
 - Create: `app/src/main/res/values/themes.xml`
 - Create: `app/src/main/java/com/dailycallsreview/app/MainActivity.kt`
 
-- [ ] **Step 1: Create `settings.gradle.kts`**
+- [x] **Step 1: Create `settings.gradle.kts`**
 
 ```kotlin
 pluginManagement {
@@ -46,7 +46,7 @@ rootProject.name = "DailyCallsReview"
 include(":app")
 ```
 
-- [ ] **Step 2: Create root `build.gradle.kts`**
+- [x] **Step 2: Create root `build.gradle.kts`**
 
 ```kotlin
 plugins {
@@ -56,7 +56,7 @@ plugins {
 }
 ```
 
-- [ ] **Step 3: Create `gradle.properties`**
+- [x] **Step 3: Create `gradle.properties`**
 
 ```properties
 org.gradle.jvmargs=-Xmx2048m
@@ -64,7 +64,7 @@ android.useAndroidX=true
 kotlin.code.style=official
 ```
 
-- [ ] **Step 4: Create `app/build.gradle.kts`**
+- [x] **Step 4: Create `app/build.gradle.kts`**
 
 ```kotlin
 plugins {
@@ -126,7 +126,7 @@ dependencies {
 }
 ```
 
-- [ ] **Step 5: Create `app/src/main/AndroidManifest.xml`**
+- [x] **Step 5: Create `app/src/main/AndroidManifest.xml`**
 
 ```xml
 <?xml version="1.0" encoding="utf-8"?>
@@ -156,7 +156,7 @@ dependencies {
 </manifest>
 ```
 
-- [ ] **Step 6: Create `app/src/main/res/values/strings.xml`**
+- [x] **Step 6: Create `app/src/main/res/values/strings.xml`**
 
 ```xml
 <?xml version="1.0" encoding="utf-8"?>
@@ -165,7 +165,7 @@ dependencies {
 </resources>
 ```
 
-- [ ] **Step 7: Create `app/src/main/res/values/themes.xml`**
+- [x] **Step 7: Create `app/src/main/res/values/themes.xml`**
 
 ```xml
 <?xml version="1.0" encoding="utf-8"?>
@@ -174,7 +174,7 @@ dependencies {
 </resources>
 ```
 
-- [ ] **Step 8: Create an Android-appropriate `.gitignore` at the project root**
+- [x] **Step 8: Create an Android-appropriate `.gitignore` at the project root**
 
 ```gitignore
 *.iml
@@ -192,7 +192,7 @@ local.properties
 
 `local.properties` holds a machine-specific Android SDK path and must never be committed — every subsequent task that runs Gradle relies on this being excluded from version control from the very start.
 
-- [ ] **Step 9: Create a placeholder `MainActivity.kt`**
+- [x] **Step 9: Create a placeholder `MainActivity.kt`**
 
 ```kotlin
 package com.dailycallsreview.app
@@ -222,14 +222,14 @@ class MainActivity : ComponentActivity() {
 
 This placeholder is replaced in Task 18 once the real navigation shell exists — its only purpose here is to let the project compile end-to-end.
 
-- [ ] **Step 10: Generate the Gradle wrapper and verify the project compiles**
+- [x] **Step 10: Generate the Gradle wrapper and verify the project compiles**
 
 Run: `gradle wrapper --gradle-version 8.7` (or open the project once in Android Studio, which generates the wrapper automatically), then:
 
 Run: `./gradlew assembleDebug`
 Expected: `BUILD SUCCESSFUL`
 
-- [ ] **Step 11: Commit**
+- [x] **Step 11: Commit**
 
 ```bash
 git add .gitignore settings.gradle.kts build.gradle.kts gradle.properties app/build.gradle.kts app/src/main/AndroidManifest.xml app/src/main/res app/src/main/java gradle gradlew gradlew.bat
