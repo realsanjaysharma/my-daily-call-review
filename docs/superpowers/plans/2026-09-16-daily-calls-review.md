@@ -795,7 +795,7 @@ git commit -m "feat: add call aggregator with off-hours flagging and range summa
 - Create: `app/src/main/java/com/dailycallsreview/app/data/db/TaggedContact.kt`
 - Test: `app/src/androidTest/java/com/dailycallsreview/app/data/db/TaggedContactDaoTest.kt`
 
-- [ ] **Step 1: Create the entity and DAO**
+- [x] **Step 1: Create the entity and DAO**
 
 ```kotlin
 package com.dailycallsreview.app.data.db
@@ -833,7 +833,7 @@ interface TaggedContactDao {
 
 Note: this file has no `AppDatabase` reference yet — that's assembled in Task 7 once all three entities exist. This DAO can't be instantiated standalone, so its test (Step 2) references a minimal single-entity database declared inline in the test file, matching the pattern used in Room's own docs for isolated DAO tests.
 
-- [ ] **Step 2: Write the instrumented test**
+- [x] **Step 2: Write the instrumented test**
 
 ```kotlin
 package com.dailycallsreview.app.data.db
@@ -905,12 +905,12 @@ class TaggedContactDaoTest {
 }
 ```
 
-- [ ] **Step 3: Run the instrumented test on a device or emulator**
+- [x] **Step 3: Run the instrumented test on a device or emulator**
 
 Run: `./gradlew connectedDebugAndroidTest --tests "com.dailycallsreview.app.data.db.TaggedContactDaoTest"`
 Expected: `BUILD SUCCESSFUL`, 2 tests passed. (Requires a connected device or running emulator.)
 
-- [ ] **Step 4: Commit**
+- [x] **Step 4: Commit**
 
 ```bash
 git add app/src/main/java/com/dailycallsreview/app/data/db/TaggedContact.kt app/src/androidTest/java/com/dailycallsreview/app/data/db/TaggedContactDaoTest.kt
@@ -1022,7 +1022,7 @@ class HolidayDaoTest {
 
 - [ ] **Step 3: Run the instrumented test**
 
-Run: `./gradlew connectedDebugAndroidTest --tests "com.dailycallsreview.app.data.db.HolidayDaoTest"`
+Run: `./gradlew connectedDebugAndroidTest -Pandroid.testInstrumentationRunnerArguments.class=com.dailycallsreview.app.data.db.HolidayDaoTest` (the `--tests` flag is not recognized by `connectedDebugAndroidTest` on this AGP version — use `-Pandroid.testInstrumentationRunnerArguments.class=...` instead to filter to one class)
 Expected: `BUILD SUCCESSFUL`, 2 tests passed.
 
 - [ ] **Step 4: Commit**
@@ -1215,7 +1215,7 @@ class AppSettingsDaoTest {
 
 - [ ] **Step 7: Run the instrumented test**
 
-Run: `./gradlew connectedDebugAndroidTest --tests "com.dailycallsreview.app.data.db.AppSettingsDaoTest"`
+Run: `./gradlew connectedDebugAndroidTest -Pandroid.testInstrumentationRunnerArguments.class=com.dailycallsreview.app.data.db.AppSettingsDaoTest` (the `--tests` flag is not recognized by `connectedDebugAndroidTest` on this AGP version — use `-Pandroid.testInstrumentationRunnerArguments.class=...` instead to filter to one class)
 Expected: `BUILD SUCCESSFUL`, 2 tests passed.
 
 - [ ] **Step 8: Create `AppDatabase.kt`, assembling all three entities**
