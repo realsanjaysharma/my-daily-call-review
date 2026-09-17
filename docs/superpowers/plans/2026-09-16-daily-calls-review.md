@@ -2033,7 +2033,7 @@ git commit -m "feat: add settings screen for work hours, working days, and holid
 - Create: `app/src/main/java/com/dailycallsreview/app/ui/home/HomeViewModel.kt`
 - Create: `app/src/main/java/com/dailycallsreview/app/ui/home/HomeScreen.kt`
 
-- [ ] **Step 1: Write `DailySummaryCard.kt`**
+- [x] **Step 1: Write `DailySummaryCard.kt`**
 
 ```kotlin
 package com.dailycallsreview.app.ui.common
@@ -2080,7 +2080,7 @@ private fun formatDuration(seconds: Long): String {
 }
 ```
 
-- [ ] **Step 2: Write `HomeViewModel.kt`**
+- [x] **Step 2: Write `HomeViewModel.kt`**
 
 ```kotlin
 package com.dailycallsreview.app.ui.home
@@ -2135,7 +2135,7 @@ class HomeViewModel(
 }
 ```
 
-- [ ] **Step 3: Write `HomeScreen.kt`**
+- [x] **Step 3: Write `HomeScreen.kt`**
 
 ```kotlin
 package com.dailycallsreview.app.ui.home
@@ -2196,12 +2196,12 @@ private fun HomeActionBar(
 }
 ```
 
-- [ ] **Step 4: Verify the project compiles**
+- [x] **Step 4: Verify the project compiles**
 
 Run: `./gradlew compileDebugKotlin`
 Expected: `BUILD SUCCESSFUL`
 
-- [ ] **Step 5: Commit**
+- [x] **Step 5: Commit**
 
 ```bash
 git add app/src/main/java/com/dailycallsreview/app/ui/common app/src/main/java/com/dailycallsreview/app/ui/home
