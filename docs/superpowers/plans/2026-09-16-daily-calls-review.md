@@ -2738,7 +2738,7 @@ Provides three writers matching the three shapes of data History/Range Detail ca
 - Create: `app/src/main/res/xml/file_paths.xml`
 - Modify: `app/src/main/AndroidManifest.xml`
 
-- [ ] **Step 1: Write `CsvExporter.kt`**
+- [x] **Step 1: Write `CsvExporter.kt`**
 
 ```kotlin
 package com.dailycallsreview.app.ui.export
@@ -2874,7 +2874,7 @@ object CsvExporter {
 }
 ```
 
-- [ ] **Step 2: Create `app/src/main/res/xml/file_paths.xml`**
+- [x] **Step 2: Create `app/src/main/res/xml/file_paths.xml`**
 
 ```xml
 <?xml version="1.0" encoding="utf-8"?>
@@ -2883,7 +2883,7 @@ object CsvExporter {
 </paths>
 ```
 
-- [ ] **Step 3: Register the `FileProvider` in the manifest**
+- [x] **Step 3: Register the `FileProvider` in the manifest**
 
 Modify `app/src/main/AndroidManifest.xml` — add inside `<application>`, after the `<activity>` block:
 
@@ -2899,12 +2899,12 @@ Modify `app/src/main/AndroidManifest.xml` — add inside `<application>`, after 
 </provider>
 ```
 
-- [ ] **Step 4: Verify the whole project compiles (this resolves the `CsvExporter` references left open in Tasks 15–16)**
+- [x] **Step 4: Verify the whole project compiles (this resolves the `CsvExporter` references left open in Tasks 15–16)**
 
 Run: `./gradlew compileDebugKotlin`
 Expected: `BUILD SUCCESSFUL`
 
-- [ ] **Step 5: Commit**
+- [x] **Step 5: Commit**
 
 ```bash
 git add app/src/main/java/com/dailycallsreview/app/ui/export app/src/main/res/xml/file_paths.xml app/src/main/AndroidManifest.xml
