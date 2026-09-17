@@ -1548,7 +1548,7 @@ git commit -m "feat: add team and settings repositories"
 - Create: `app/src/main/java/com/dailycallsreview/app/ui/permissions/PermissionsGate.kt`
 - Modify: `app/src/main/AndroidManifest.xml`
 
-- [ ] **Step 1: Write `DailyCallsReviewApplication.kt`**
+- [x] **Step 1: Write `DailyCallsReviewApplication.kt`**
 
 ```kotlin
 package com.dailycallsreview.app
@@ -1576,7 +1576,7 @@ class DailyCallsReviewApplication : Application() {
 }
 ```
 
-- [ ] **Step 2: Write `PermissionsGate.kt`**
+- [x] **Step 2: Write `PermissionsGate.kt`**
 
 ```kotlin
 package com.dailycallsreview.app.ui.permissions
@@ -1660,7 +1660,7 @@ Compose/`lifecycle-runtime-ktx` dependencies — no new Gradle dependency needed
 to resolve, `androidx.lifecycle.compose.LocalLifecycleOwner` is the alternative import, which
 requires adding `androidx.lifecycle:lifecycle-runtime-compose` to `app/build.gradle.kts`.)
 
-- [ ] **Step 3: Register the Application class in the manifest**
+- [x] **Step 3: Register the Application class in the manifest**
 
 Modify `app/src/main/AndroidManifest.xml` — add `android:name=".DailyCallsReviewApplication"` to the `<application>` tag:
 
@@ -1673,12 +1673,12 @@ Modify `app/src/main/AndroidManifest.xml` — add `android:name=".DailyCallsRevi
     android:theme="@style/Theme.DailyCallsReview">
 ```
 
-- [ ] **Step 4: Verify the project compiles**
+- [x] **Step 4: Verify the project compiles**
 
 Run: `./gradlew compileDebugKotlin`
 Expected: `BUILD SUCCESSFUL`
 
-- [ ] **Step 5: Commit**
+- [x] **Step 5: Commit**
 
 ```bash
 git add app/src/main/java/com/dailycallsreview/app/DailyCallsReviewApplication.kt app/src/main/java/com/dailycallsreview/app/ui/permissions/PermissionsGate.kt app/src/main/AndroidManifest.xml
