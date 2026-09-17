@@ -1564,7 +1564,7 @@ import com.dailycallsreview.app.data.db.AppDatabase
 class DailyCallsReviewApplication : Application() {
 
     val database: AppDatabase by lazy {
-        Room.databaseBuilder(this, AppDatabase::class.java, "daily-calls-review.db").build()
+        Room.databaseBuilder(applicationContext, AppDatabase::class.java, "daily-calls-review.db").build()
     }
 
     val teamRepository: TeamRepository by lazy { TeamRepository(database.taggedContactDao()) }
@@ -1591,14 +1591,18 @@ import androidx.compose.foundation.layout.padding
 import androidx.compose.material3.Button
 import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
+import androidx.compose.runtime.DisposableEffect
 import androidx.compose.runtime.getValue
 import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.remember
 import androidx.compose.runtime.setValue
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.platform.LocalContext
+import androidx.compose.ui.platform.LocalLifecycleOwner
 import androidx.compose.ui.unit.dp
 import androidx.core.content.ContextCompat
+import androidx.lifecycle.Lifecycle
+import androidx.lifecycle.LifecycleEventObserver
 
 private val REQUIRED_PERMISSIONS = arrayOf(
     Manifest.permission.READ_CALL_LOG,
@@ -1614,6 +1618,20 @@ private fun hasAllPermissions(context: Context): Boolean =
 fun PermissionsGate(content: @Composable () -> Unit) {
     val context = LocalContext.current
     var granted by remember { mutableStateOf(hasAllPermissions(context)) }
+
+    // Re-check on every resume: permissions can be granted or revoked from
+    // outside the app (system Settings, or an OS auto-reset of an unused
+    // permission) while this composable's state would otherwise go stale.
+    val lifecycleOwner = LocalLifecycleOwner.current
+    DisposableEffect(lifecycleOwner) {
+        val observer = LifecycleEventObserver { _, event ->
+            if (event == Lifecycle.Event.ON_RESUME) {
+                granted = hasAllPermissions(context)
+            }
+        }
+        lifecycleOwner.lifecycle.addObserver(observer)
+        onDispose { lifecycleOwner.lifecycle.removeObserver(observer) }
+    }
 
     val launcher = rememberLauncherForActivityResult(
         ActivityResultContracts.RequestMultiplePermissions()
@@ -1636,6 +1654,11 @@ fun PermissionsGate(content: @Composable () -> Unit) {
     }
 }
 ```
+
+`LocalLifecycleOwner` resolves from `androidx.compose.ui.platform` given this project's existing
+Compose/`lifecycle-runtime-ktx` dependencies — no new Gradle dependency needed. (If it ever fails
+to resolve, `androidx.lifecycle.compose.LocalLifecycleOwner` is the alternative import, which
+requires adding `androidx.lifecycle:lifecycle-runtime-compose` to `app/build.gradle.kts`.)
 
 - [ ] **Step 3: Register the Application class in the manifest**
 

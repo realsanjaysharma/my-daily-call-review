@@ -11,7 +11,7 @@ import com.dailycallsreview.app.data.db.AppDatabase
 class DailyCallsReviewApplication : Application() {
 
     val database: AppDatabase by lazy {
-        Room.databaseBuilder(this, AppDatabase::class.java, "daily-calls-review.db").build()
+        Room.databaseBuilder(applicationContext, AppDatabase::class.java, "daily-calls-review.db").build()
     }
 
     val teamRepository: TeamRepository by lazy { TeamRepository(database.taggedContactDao()) }
