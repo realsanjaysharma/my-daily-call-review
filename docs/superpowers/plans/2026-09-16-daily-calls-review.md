@@ -1045,7 +1045,7 @@ git commit -m "feat: add holiday Room entity and DAO"
 
 `WorkingDaysMask` converts between a `Set<DayOfWeek>` (used everywhere in the domain layer) and a single `Int` bitmask (stored in Room) — this is pure logic, so it gets a plain JVM unit test.
 
-- [ ] **Step 1: Write the failing test for `WorkingDaysMask`**
+- [x] **Step 1: Write the failing test for `WorkingDaysMask`**
 
 ```kotlin
 package com.dailycallsreview.app.data.db
@@ -1088,12 +1088,12 @@ class WorkingDaysMaskTest {
 }
 ```
 
-- [ ] **Step 2: Run the test to verify it fails**
+- [x] **Step 2: Run the test to verify it fails**
 
 Run: `./gradlew testDebugUnitTest --tests "com.dailycallsreview.app.data.db.WorkingDaysMaskTest"`
 Expected: FAIL — `WorkingDaysMask` is unresolved.
 
-- [ ] **Step 3: Write `WorkingDaysMask.kt`**
+- [x] **Step 3: Write `WorkingDaysMask.kt`**
 
 ```kotlin
 package com.dailycallsreview.app.data.db
@@ -1118,12 +1118,12 @@ object WorkingDaysMask {
 }
 ```
 
-- [ ] **Step 4: Run the test to verify it passes**
+- [x] **Step 4: Run the test to verify it passes**
 
 Run: `./gradlew testDebugUnitTest --tests "com.dailycallsreview.app.data.db.WorkingDaysMaskTest"`
 Expected: `BUILD SUCCESSFUL`, 4 tests passed.
 
-- [ ] **Step 5: Create `AppSettings.kt` (entity + DAO)**
+- [x] **Step 5: Create `AppSettings.kt` (entity + DAO)**
 
 ```kotlin
 package com.dailycallsreview.app.data.db
@@ -1154,7 +1154,7 @@ interface AppSettingsDao {
 }
 ```
 
-- [ ] **Step 6: Write the instrumented test for `AppSettingsDao`**
+- [x] **Step 6: Write the instrumented test for `AppSettingsDao`**
 
 ```kotlin
 package com.dailycallsreview.app.data.db
@@ -1213,12 +1213,12 @@ class AppSettingsDaoTest {
 }
 ```
 
-- [ ] **Step 7: Run the instrumented test**
+- [x] **Step 7: Run the instrumented test**
 
 Run: `./gradlew connectedDebugAndroidTest -Pandroid.testInstrumentationRunnerArguments.class=com.dailycallsreview.app.data.db.AppSettingsDaoTest` (the `--tests` flag is not recognized by `connectedDebugAndroidTest` on this AGP version — use `-Pandroid.testInstrumentationRunnerArguments.class=...` instead to filter to one class)
 Expected: `BUILD SUCCESSFUL`, 2 tests passed.
 
-- [ ] **Step 8: Create `AppDatabase.kt`, assembling all three entities**
+- [x] **Step 8: Create `AppDatabase.kt`, assembling all three entities**
 
 ```kotlin
 package com.dailycallsreview.app.data.db
@@ -1238,12 +1238,12 @@ abstract class AppDatabase : RoomDatabase() {
 }
 ```
 
-- [ ] **Step 9: Verify the project compiles**
+- [x] **Step 9: Verify the project compiles**
 
 Run: `./gradlew compileDebugKotlin`
 Expected: `BUILD SUCCESSFUL`
 
-- [ ] **Step 10: Commit**
+- [x] **Step 10: Commit**
 
 ```bash
 git add app/src/main/java/com/dailycallsreview/app/data/db app/src/test/java/com/dailycallsreview/app/data/db/WorkingDaysMaskTest.kt app/src/androidTest/java/com/dailycallsreview/app/data/db/AppSettingsDaoTest.kt
