@@ -1432,7 +1432,7 @@ Thin wrappers around the DAOs from Tasks 5–7, giving the UI layer domain-shape
 - Create: `app/src/main/java/com/dailycallsreview/app/data/TeamRepository.kt`
 - Create: `app/src/main/java/com/dailycallsreview/app/data/SettingsRepository.kt`
 
-- [ ] **Step 1: Write `TeamRepository.kt`**
+- [x] **Step 1: Write `TeamRepository.kt`**
 
 ```kotlin
 package com.dailycallsreview.app.data
@@ -1467,7 +1467,7 @@ class TeamRepository(private val dao: TaggedContactDao) {
 }
 ```
 
-- [ ] **Step 2: Write `SettingsRepository.kt`**
+- [x] **Step 2: Write `SettingsRepository.kt`**
 
 ```kotlin
 package com.dailycallsreview.app.data
@@ -1525,12 +1525,12 @@ class SettingsRepository(
 }
 ```
 
-- [ ] **Step 3: Verify the project compiles**
+- [x] **Step 3: Verify the project compiles**
 
 Run: `./gradlew compileDebugKotlin`
 Expected: `BUILD SUCCESSFUL`
 
-- [ ] **Step 4: Commit**
+- [x] **Step 4: Commit**
 
 ```bash
 git add app/src/main/java/com/dailycallsreview/app/data/TeamRepository.kt app/src/main/java/com/dailycallsreview/app/data/SettingsRepository.kt
