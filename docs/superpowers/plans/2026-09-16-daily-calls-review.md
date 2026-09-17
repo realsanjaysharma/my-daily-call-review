@@ -369,7 +369,7 @@ git commit -m "feat: add core domain models"
 - Create: `app/src/main/java/com/dailycallsreview/app/core/PhoneNumberNormalizer.kt`
 - Test: `app/src/test/java/com/dailycallsreview/app/core/PhoneNumberNormalizerTest.kt`
 
-- [ ] **Step 1: Write the failing test**
+- [x] **Step 1: Write the failing test**
 
 ```kotlin
 package com.dailycallsreview.app.core
@@ -401,12 +401,12 @@ class PhoneNumberNormalizerTest {
 }
 ```
 
-- [ ] **Step 2: Run the test to verify it fails**
+- [x] **Step 2: Run the test to verify it fails**
 
 Run: `./gradlew testDebugUnitTest --tests "com.dailycallsreview.app.core.PhoneNumberNormalizerTest"`
 Expected: FAIL — `PhoneNumberNormalizer` is unresolved.
 
-- [ ] **Step 3: Write the implementation**
+- [x] **Step 3: Write the implementation**
 
 ```kotlin
 package com.dailycallsreview.app.core
@@ -419,12 +419,12 @@ object PhoneNumberNormalizer {
 }
 ```
 
-- [ ] **Step 4: Run the test to verify it passes**
+- [x] **Step 4: Run the test to verify it passes**
 
 Run: `./gradlew testDebugUnitTest --tests "com.dailycallsreview.app.core.PhoneNumberNormalizerTest"`
 Expected: `BUILD SUCCESSFUL`, 4 tests passed.
 
-- [ ] **Step 5: Commit**
+- [x] **Step 5: Commit**
 
 ```bash
 git add app/src/main/java/com/dailycallsreview/app/core/PhoneNumberNormalizer.kt app/src/test/java/com/dailycallsreview/app/core/PhoneNumberNormalizerTest.kt
