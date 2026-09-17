@@ -1695,7 +1695,7 @@ Lets the user tag/untag contacts as coworkers. Tagging a contact tags all of its
 - Create: `app/src/main/java/com/dailycallsreview/app/ui/team/TeamSetupViewModel.kt`
 - Create: `app/src/main/java/com/dailycallsreview/app/ui/team/TeamSetupScreen.kt`
 
-- [ ] **Step 1: Write `TeamSetupViewModel.kt`**
+- [x] **Step 1: Write `TeamSetupViewModel.kt`**
 
 ```kotlin
 package com.dailycallsreview.app.ui.team
@@ -1741,7 +1741,7 @@ class TeamSetupViewModel(
 }
 ```
 
-- [ ] **Step 2: Write `TeamSetupScreen.kt`**
+- [x] **Step 2: Write `TeamSetupScreen.kt`**
 
 ```kotlin
 package com.dailycallsreview.app.ui.team
@@ -1794,12 +1794,12 @@ fun TeamSetupScreen(app: DailyCallsReviewApplication) {
 }
 ```
 
-- [ ] **Step 3: Verify the project compiles**
+- [x] **Step 3: Verify the project compiles**
 
 Run: `./gradlew compileDebugKotlin`
 Expected: `BUILD SUCCESSFUL`
 
-- [ ] **Step 4: Commit**
+- [x] **Step 4: Commit**
 
 ```bash
 git add app/src/main/java/com/dailycallsreview/app/ui/team
