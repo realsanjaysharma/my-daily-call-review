@@ -250,7 +250,7 @@ git commit -m "chore: scaffold Android project"
 
 These are plain data classes with no logic, so there is nothing to TDD here — they exist to give the aggregator (Task 4) and repositories concrete types to work with.
 
-- [ ] **Step 1: Create `CallType.kt`**
+- [x] **Step 1: Create `CallType.kt`**
 
 ```kotlin
 package com.dailycallsreview.app.core
@@ -262,7 +262,7 @@ enum class CallType {
 }
 ```
 
-- [ ] **Step 2: Create `CallRecord.kt`**
+- [x] **Step 2: Create `CallRecord.kt`**
 
 ```kotlin
 package com.dailycallsreview.app.core
@@ -276,7 +276,7 @@ data class CallRecord(
 )
 ```
 
-- [ ] **Step 3: Create `WorkSchedule.kt`**
+- [x] **Step 3: Create `WorkSchedule.kt`**
 
 ```kotlin
 package com.dailycallsreview.app.core
@@ -293,7 +293,7 @@ data class WorkSchedule(
 )
 ```
 
-- [ ] **Step 4: Create `CoworkerStat.kt`**
+- [x] **Step 4: Create `CoworkerStat.kt`**
 
 ```kotlin
 package com.dailycallsreview.app.core
@@ -306,7 +306,7 @@ data class CoworkerStat(
 )
 ```
 
-- [ ] **Step 5: Create `DailySummary.kt`**
+- [x] **Step 5: Create `DailySummary.kt`**
 
 ```kotlin
 package com.dailycallsreview.app.core
@@ -328,7 +328,7 @@ data class DailySummary(
 )
 ```
 
-- [ ] **Step 6: Create `RangeSummary.kt`**
+- [x] **Step 6: Create `RangeSummary.kt`**
 
 ```kotlin
 package com.dailycallsreview.app.core
@@ -349,12 +349,12 @@ data class RangeSummary(
 )
 ```
 
-- [ ] **Step 7: Verify the project still compiles**
+- [x] **Step 7: Verify the project still compiles**
 
 Run: `./gradlew compileDebugKotlin`
 Expected: `BUILD SUCCESSFUL`
 
-- [ ] **Step 8: Commit**
+- [x] **Step 8: Commit**
 
 ```bash
 git add app/src/main/java/com/dailycallsreview/app/core
