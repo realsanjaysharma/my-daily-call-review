@@ -2795,7 +2795,7 @@ object CsvExporter {
                     listOf(
                         dateTime.toLocalDate().toString(),
                         dateTime.toLocalTime().format(TIME_FORMAT),
-                        call.contactName ?: call.phoneNumberLast10,
+                        csvField(call.contactName ?: call.phoneNumberLast10),
                         call.durationSeconds.toString(),
                         call.type.name
                     ).joinToString(",")
@@ -2808,18 +2808,37 @@ object CsvExporter {
     fun exportRangeAndShare(context: Context, fileName: String, summary: RangeSummary) {
         val file = newExportFile(context, fileName)
         FileWriter(file).use { writer ->
-            writer.appendLine("Range,${summary.startDate} to ${summary.endDate}")
-            writer.appendLine("Total Calls,${summary.totalCalls}")
-            writer.appendLine("Total Talk Time (min),${summary.totalTalkTimeSeconds / 60}")
-            writer.appendLine("Average Shift Span,${summary.averageShiftSpanSeconds?.let { formatDuration(it) } ?: ""}")
-            writer.appendLine("Busiest Coworker,${summary.busiestCoworker?.displayName ?: ""}")
-            writer.appendLine("Off-Hours Calls,${summary.offHoursCallCount}")
-            writer.appendLine("Holidays In Range,${summary.holidayCount}")
-            writer.appendLine("Non-Working Days In Range,${summary.nonWorkingDayCount}")
+            writer.appendLine(
+                listOf("Range", "${summary.startDate} to ${summary.endDate}").joinToString(",")
+            )
+            writer.appendLine(listOf("Total Calls", summary.totalCalls.toString()).joinToString(","))
+            writer.appendLine(
+                listOf("Total Talk Time (min)", (summary.totalTalkTimeSeconds / 60).toString()).joinToString(",")
+            )
+            writer.appendLine(
+                listOf(
+                    "Average Shift Span",
+                    summary.averageShiftSpanSeconds?.let { formatDuration(it) } ?: ""
+                ).joinToString(",")
+            )
+            writer.appendLine(
+                listOf("Busiest Coworker", csvField(summary.busiestCoworker?.displayName ?: "")).joinToString(",")
+            )
+            writer.appendLine(listOf("Off-Hours Calls", summary.offHoursCallCount.toString()).joinToString(","))
+            writer.appendLine(listOf("Holidays In Range", summary.holidayCount.toString()).joinToString(","))
+            writer.appendLine(
+                listOf("Non-Working Days In Range", summary.nonWorkingDayCount.toString()).joinToString(",")
+            )
             writer.appendLine()
             writer.appendLine("Coworker,Calls,Talk Time (min)")
             for (stat in summary.perCoworker.values) {
-                writer.appendLine("${stat.displayName},${stat.callCount},${stat.totalTalkTimeSeconds / 60}")
+                writer.appendLine(
+                    listOf(
+                        csvField(stat.displayName),
+                        stat.callCount.toString(),
+                        (stat.totalTalkTimeSeconds / 60).toString()
+                    ).joinToString(",")
+                )
             }
         }
         shareFile(context, file)
@@ -2845,6 +2864,13 @@ object CsvExporter {
         val minutes = (seconds % 3600) / 60
         return "${hours}h ${minutes}m"
     }
+
+    private fun csvField(value: String): String =
+        if (value.contains(',') || value.contains('"') || value.contains('\n')) {
+            "\"${value.replace("\"", "\"\"")}\""
+        } else {
+            value
+        }
 }
 ```
 
