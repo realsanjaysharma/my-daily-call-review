@@ -3073,7 +3073,7 @@ The widget itself queries live (same repositories, same `CallAggregator`) every 
 - Modify: `app/src/main/java/com/dailycallsreview/app/DailyCallsReviewApplication.kt`
 - Modify: `app/src/main/AndroidManifest.xml`
 
-- [ ] **Step 1: Write `TodayWidget.kt`**
+- [x] **Step 1: Write `TodayWidget.kt`**
 
 ```kotlin
 package com.dailycallsreview.app.widget
@@ -3128,7 +3128,7 @@ class TodayWidget : GlanceAppWidget() {
 }
 ```
 
-- [ ] **Step 2: Write `TodayWidgetReceiver.kt`**
+- [x] **Step 2: Write `TodayWidgetReceiver.kt`**
 
 ```kotlin
 package com.dailycallsreview.app.widget
@@ -3141,7 +3141,7 @@ class TodayWidgetReceiver : GlanceAppWidgetReceiver() {
 }
 ```
 
-- [ ] **Step 3: Write `TodayWidgetWorker.kt`**
+- [x] **Step 3: Write `TodayWidgetWorker.kt`**
 
 ```kotlin
 package com.dailycallsreview.app.widget
@@ -3158,7 +3158,7 @@ class TodayWidgetWorker(context: Context, params: WorkerParameters) : CoroutineW
 }
 ```
 
-- [ ] **Step 4: Create `app/src/main/res/layout/glance_default_loading_layout.xml`**
+- [x] **Step 4: Create `app/src/main/res/layout/glance_default_loading_layout.xml`**
 
 ```xml
 <?xml version="1.0" encoding="utf-8"?>
@@ -3167,7 +3167,7 @@ class TodayWidgetWorker(context: Context, params: WorkerParameters) : CoroutineW
     android:layout_height="match_parent" />
 ```
 
-- [ ] **Step 5: Create `app/src/main/res/xml/today_widget_info.xml`**
+- [x] **Step 5: Create `app/src/main/res/xml/today_widget_info.xml`**
 
 ```xml
 <?xml version="1.0" encoding="utf-8"?>
@@ -3182,7 +3182,7 @@ class TodayWidgetWorker(context: Context, params: WorkerParameters) : CoroutineW
 
 `updatePeriodMillis="0"` is intentional — the widget's own refresh cycle is driven entirely by the `WorkManager` job (Step 7), not by the OS's built-in (and less reliable, minimum-30-minute) AppWidget update mechanism.
 
-- [ ] **Step 6: Register the widget receiver in the manifest**
+- [x] **Step 6: Register the widget receiver in the manifest**
 
 Modify `app/src/main/AndroidManifest.xml` — add inside `<application>`, after the `FileProvider` block from Task 17:
 
@@ -3199,7 +3199,7 @@ Modify `app/src/main/AndroidManifest.xml` — add inside `<application>`, after 
 </receiver>
 ```
 
-- [ ] **Step 7: Modify `DailyCallsReviewApplication.kt` to enqueue the periodic refresh**
+- [x] **Step 7: Modify `DailyCallsReviewApplication.kt` to enqueue the periodic refresh**
 
 ```kotlin
 package com.dailycallsreview.app
@@ -3242,12 +3242,12 @@ class DailyCallsReviewApplication : Application() {
 }
 ```
 
-- [ ] **Step 8: Verify the full project compiles**
+- [x] **Step 8: Verify the full project compiles**
 
 Run: `./gradlew assembleDebug`
 Expected: `BUILD SUCCESSFUL`
 
-- [ ] **Step 9: Commit**
+- [x] **Step 9: Commit**
 
 ```bash
 git add app/src/main/java/com/dailycallsreview/app/widget app/src/main/res/xml/today_widget_info.xml app/src/main/res/layout/glance_default_loading_layout.xml app/src/main/java/com/dailycallsreview/app/DailyCallsReviewApplication.kt app/src/main/AndroidManifest.xml
