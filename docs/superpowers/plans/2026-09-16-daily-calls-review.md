@@ -1350,7 +1350,7 @@ Reads all phone contacts with their numbers (so Team Setup, Task 12, can list th
 **Files:**
 - Create: `app/src/main/java/com/dailycallsreview/app/data/contacts/ContactsRepository.kt`
 
-- [ ] **Step 1: Write `ContactsRepository.kt`**
+- [x] **Step 1: Write `ContactsRepository.kt`**
 
 ```kotlin
 package com.dailycallsreview.app.data.contacts
@@ -1410,12 +1410,12 @@ class ContactsRepository(private val context: Context) {
 }
 ```
 
-- [ ] **Step 2: Verify the project compiles**
+- [x] **Step 2: Verify the project compiles**
 
 Run: `./gradlew compileDebugKotlin`
 Expected: `BUILD SUCCESSFUL`
 
-- [ ] **Step 3: Commit**
+- [x] **Step 3: Commit**
 
 ```bash
 git add app/src/main/java/com/dailycallsreview/app/data/contacts/ContactsRepository.kt
