@@ -1,9 +1,6 @@
 package com.dailycallsreview.app.widget
 
-import android.Manifest
 import android.content.Context
-import android.content.pm.PackageManager
-import androidx.core.content.ContextCompat
 import androidx.glance.GlanceId
 import androidx.glance.GlanceModifier
 import androidx.glance.action.actionStartActivity
@@ -17,25 +14,16 @@ import androidx.compose.ui.unit.dp
 import com.dailycallsreview.app.DailyCallsReviewApplication
 import com.dailycallsreview.app.MainActivity
 import com.dailycallsreview.app.core.CallAggregator
+import com.dailycallsreview.app.ui.permissions.RequiredPermissions
 import kotlinx.coroutines.flow.first
 import java.time.LocalDate
 import java.time.ZoneId
-
-private val REQUIRED_PERMISSIONS = arrayOf(
-    Manifest.permission.READ_CALL_LOG,
-    Manifest.permission.READ_CONTACTS
-)
-
-private fun hasAllPermissions(context: Context): Boolean =
-    REQUIRED_PERMISSIONS.all {
-        ContextCompat.checkSelfPermission(context, it) == PackageManager.PERMISSION_GRANTED
-    }
 
 class TodayWidget : GlanceAppWidget() {
     override suspend fun provideGlance(context: Context, id: GlanceId) {
         val app = context.applicationContext as DailyCallsReviewApplication
 
-        if (!hasAllPermissions(context)) {
+        if (!RequiredPermissions.hasAll(context)) {
             provideContent {
                 Column(modifier = GlanceModifier.padding(12.dp).clickable(actionStartActivity<MainActivity>())) {
                     Text("Open Daily Calls Review to grant permissions")

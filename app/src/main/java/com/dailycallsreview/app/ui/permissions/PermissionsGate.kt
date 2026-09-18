@@ -1,8 +1,5 @@
 package com.dailycallsreview.app.ui.permissions
 
-import android.Manifest
-import android.content.Context
-import android.content.pm.PackageManager
 import androidx.activity.compose.rememberLauncherForActivityResult
 import androidx.activity.result.contract.ActivityResultContracts
 import androidx.compose.foundation.layout.Column
@@ -19,30 +16,19 @@ import androidx.compose.ui.Modifier
 import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.platform.LocalLifecycleOwner
 import androidx.compose.ui.unit.dp
-import androidx.core.content.ContextCompat
 import androidx.lifecycle.Lifecycle
 import androidx.lifecycle.LifecycleEventObserver
-
-private val REQUIRED_PERMISSIONS = arrayOf(
-    Manifest.permission.READ_CALL_LOG,
-    Manifest.permission.READ_CONTACTS
-)
-
-private fun hasAllPermissions(context: Context): Boolean =
-    REQUIRED_PERMISSIONS.all {
-        ContextCompat.checkSelfPermission(context, it) == PackageManager.PERMISSION_GRANTED
-    }
 
 @Composable
 fun PermissionsGate(content: @Composable () -> Unit) {
     val context = LocalContext.current
-    var granted by remember { mutableStateOf(hasAllPermissions(context)) }
+    var granted by remember { mutableStateOf(RequiredPermissions.hasAll(context)) }
 
     val lifecycleOwner = LocalLifecycleOwner.current
     DisposableEffect(lifecycleOwner) {
         val observer = LifecycleEventObserver { _, event ->
             if (event == Lifecycle.Event.ON_RESUME) {
-                granted = hasAllPermissions(context)
+                granted = RequiredPermissions.hasAll(context)
             }
         }
         lifecycleOwner.lifecycle.addObserver(observer)
@@ -63,7 +49,7 @@ fun PermissionsGate(content: @Composable () -> Unit) {
                 "Daily Calls Review needs access to your call log and contacts to track " +
                     "calls with your tagged coworkers. No data ever leaves your device."
             )
-            Button(onClick = { launcher.launch(REQUIRED_PERMISSIONS) }) {
+            Button(onClick = { launcher.launch(RequiredPermissions.ALL) }) {
                 Text("Grant access")
             }
         }
