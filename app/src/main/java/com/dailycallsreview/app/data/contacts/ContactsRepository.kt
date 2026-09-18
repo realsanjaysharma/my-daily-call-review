@@ -3,6 +3,8 @@ package com.dailycallsreview.app.data.contacts
 import android.content.Context
 import android.provider.ContactsContract
 import com.dailycallsreview.app.core.PhoneNumberNormalizer
+import kotlinx.coroutines.Dispatchers
+import kotlinx.coroutines.withContext
 
 data class PickableContact(
     val contactId: Long,
@@ -12,7 +14,7 @@ data class PickableContact(
 
 class ContactsRepository(private val context: Context) {
 
-    fun getAllContactsWithPhoneNumbers(): List<PickableContact> {
+    suspend fun getAllContactsWithPhoneNumbers(): List<PickableContact> = withContext(Dispatchers.IO) {
         val numbersByContact = mutableMapOf<Long, MutableList<String>>()
         val namesByContact = mutableMapOf<Long, String>()
 
@@ -44,7 +46,7 @@ class ContactsRepository(private val context: Context) {
             }
         }
 
-        return numbersByContact.map { (contactId, numbers) ->
+        numbersByContact.map { (contactId, numbers) ->
             PickableContact(
                 contactId = contactId,
                 displayName = namesByContact[contactId].orEmpty(),

@@ -26,7 +26,9 @@ class TeamSetupViewModel(
         .stateIn(viewModelScope, SharingStarted.WhileSubscribed(5000), emptySet())
 
     init {
-        _allContacts.value = contactsRepository.getAllContactsWithPhoneNumbers()
+        viewModelScope.launch {
+            _allContacts.value = contactsRepository.getAllContactsWithPhoneNumbers()
+        }
     }
 
     fun toggleTag(contact: PickableContact, currentlyTagged: Boolean) {
