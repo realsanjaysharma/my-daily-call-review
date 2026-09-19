@@ -79,7 +79,7 @@ These came out of the brainstorming session as genuine UX improvements, not just
 
 | Feature | Screen | What it does | Computation |
 |---|---|---|---|
-| **Suggested contacts** | Team Setup | Shows untagged contacts ranked by call frequency (e.g. "31 calls this month") above the full alphabetical contact list, so tagging your real team takes seconds instead of scrolling your whole phone contacts. | New query: last-30-days call log entries, matched via `PhoneNumberNormalizer` against `ContactsRepository.getAllContactsWithPhoneNumbers()`, excluding already-tagged contacts, grouped by contact and sorted by count desc, top N (e.g. 10). |
+| **Suggested contacts** | Team Setup | Shows untagged contacts ranked by call frequency ("N calls this month") above the full alphabetical contact list, so tagging your real team takes seconds instead of scrolling your whole phone contacts. | New query: current-calendar-month-to-date call log entries, matched via `PhoneNumberNormalizer` against `ContactsRepository.getAllContactsWithPhoneNumbers()`, excluding already-tagged contacts, grouped by contact and sorted by count desc, top N (e.g. 10). Resets on the 1st of each month, so the list may be sparse early in a month. |
 | **Select all / Clear all** | Team Setup | Bulk-tags or bulk-untags. Operates on the currently visible (search-filtered) contact set, not the entire phone contact list, so a search first narrows what "Select all" affects. | Existing `toggleTag` called per visible untagged/tagged contact. |
 | **A–Z fast-scroll index** | Team Setup | Right-edge letter rail (only shown on "All Contacts", since Tagged/Suggested are expected to be short) jumps the list to the first contact starting with that letter. | Precomputed first-index-per-letter map over the alphabetically sorted "All Contacts" list; `LazyListState.scrollToItem`. |
 | **Edit mode for Tagged list** | Team Setup | Tapping "Edit" next to the Tagged header shows a remove (−) control per tagged row and hides Suggested/All Contacts while active, so you can't accidentally tag someone new mid-edit. "Done" exits. | Same underlying `toggleTag(untag)` call as the normal chip toggle, just gated behind an `isEditingTagged` UI state. |
@@ -109,14 +109,14 @@ The search box filters by contact display name (case-insensitive substring) acro
 
 ### 7.4 History
 
-Top app bar (title + Export CSV outline action) → segmented control **Month / Week / Year / Custom** → period navigation (‹ September 2026 ›) → summary strip card (Calls/Talk Time/Avg-per-day `StatTile`s + busiest-day line) → filter chip row (All/Off Days/Holidays/Outside Hours, restyled `ToggleChip`s, single-select as today) → content area depends on filter:
+Top app bar (title + Export CSV as a trailing icon action, moved off the content area for consistency with Home's Refresh action) → segmented control **Month / Week / Year / Custom** → period navigation (‹ September 2026 ›) → summary strip card (Calls/Talk Time/Avg-per-day `StatTile`s + busiest-day line) → filter chip row (All/Off Days/Holidays/Outside Hours, restyled `ToggleChip`s, single-select as today) → content area depends on filter:
 - **All / Off Days / Holidays:** day cards (date, time span + shift duration, call-count badge, off-hours `WarningBadge` if any) with week-subtotal headers between ISO weeks; off/holiday days render grayed with a status label instead of numbers.
 - **Outside Hours:** replaces the day-card list with the by-coworker breakdown (§6) above a flat chronological list of individual off-hours calls (avatar, name, date/time, direction icon, duration).
 - **Year mode:** summary strip becomes yearly totals + busiest-month; content area becomes 12 month-rows instead of day cards; tapping a month row navigates into Month view anchored to that month. Filters still apply on top of Year (e.g. Year + Outside Hours = by-coworker breakdown scoped to the whole year).
 
 ### 7.5 Range Detail
 
-Same shell as History minus the segmented control (it's always a fixed custom range): filter chip row, then for "All": a `SummaryCard` (Total Calls, Total Talk Time, Avg Shift Span, Busiest Coworker `StatTile`s + holiday/off-day summary line + off-hours `WarningBadge`) followed by the `CoworkerRow` list. Other filters reuse the exact same day-card list / by-coworker + call-list views built for History.
+Same shell as History minus the segmented control (it's always a fixed custom range): top app bar (date range as title + Export CSV trailing action, same as History), filter chip row, then for "All": a `SummaryCard` (Total Calls, Total Talk Time, Avg Shift Span, Busiest Coworker `StatTile`s + holiday/off-day summary line + off-hours `WarningBadge`) followed by the `CoworkerRow` list. Other filters reuse the exact same day-card list / by-coworker + call-list views built for History.
 
 ### 7.6 Day Detail
 
@@ -129,6 +129,8 @@ No screen-specific changes — it already renders via the shared `DailySummaryCa
 - **Team Setup sort:** Home/Range coworker lists sort by call count descending (busiest first).
 - **Bulk select scope:** "Select all"/"Clear all" act on the currently search-filtered visible set, not the unfiltered full contact list.
 - **Avg calls/day:** divides by days-with-≥1-tagged-call in range, matching the existing `averageShiftSpanSeconds` convention, not raw calendar days.
+- **Suggested contacts window:** current calendar month to date, not a rolling 30 days. Matches the "N calls this month" label exactly; the list can be sparse in the first few days of a new month.
+- **Export CSV placement:** moved into the top app bar as a trailing icon action on History and Range Detail, matching how Refresh moved into Home's app bar, rather than staying as a content-area button.
 
 ## 9. Out of scope (unchanged from original spec, or explicitly deferred here)
 
